@@ -1,11 +1,12 @@
 'use strict';
 
-const Gallery = require('../model/gallery.js');
+const Gallery = require('../model/gallery');
 const bodyParser = require('body-parser').json();
-const errorHandler = require('../lib/error-handler.js');
-const bearerAuthMiddleware = require('../lib/bearer-auth-middleware.js');
+const errorHandler = require('../lib/error-handler');
+const bearerAuthMiddleware = require('../lib/bearer-auth-middleware');
 
 const ERROR_MESSAGE = 'Authorization Failed';
+
 
 module.exports = router => {
   

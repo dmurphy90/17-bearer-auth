@@ -1,7 +1,7 @@
 {
   "name": "lab-dean",
   "version": "1.0.0",
-  "description": "",
+  "description": "## Installation To install this app fork then clone the repo down to your own machine. Navigate to the directory named ```lab-dean``` and type ```npm install``` to get all of the NPM packages needed for the app. It is recommended to download either ```HTTPie``` or ```Postman``` to run the functions of the app, along with ```MongoDB```.",
   "main": "index.js",
   "directories": {
     "lib": "lib"
@@ -47,9 +47,10 @@
     "dotenv": "^5.0.0",
     "express": "^4.16.2",
     "faker": "^4.1.0",
-    "jest": "^22.1.4",
+    "jest": "^22.2.1",
     "jsonwebtoken": "^8.1.1",
     "mongoose": "^5.0.3",
     "superagent": "^3.8.2"
-  }
+  },
+  "devDependencies": {}
 }
