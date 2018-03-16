@@ -14,8 +14,8 @@ describe('PUT api/v1/gallery', function() {
 
   beforeAll(() => mock.gallery.createOne().then(data => this.mockGallery = data));
 
-  describe('Valid requests', () => {
-    it('should return a 204 status with an updated gallery', () => {
+  describe('Valid request and response', () => {
+    it('Should return a status code of 204 with an updated gallery', () => {
       return superagent.put(`:${process.env.PORT}/api/v1/gallery/${this.mockGallery.gallery._id}`)
         .set('Authorization', `Bearer ${this.mockGallery.token}`)
         .send({
@@ -26,8 +26,8 @@ describe('PUT api/v1/gallery', function() {
         });
     });
   });
-  describe('Invalid requests', () => {
-    it('should return a 401 with an invalid token', () => {
+  describe('Invalid request and response', () => {
+    it('Should return a status code of 401 when given bad token', () => {
       return superagent.put(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', 'Bearer BADTOKEN')
         .send({
@@ -35,7 +35,7 @@ describe('PUT api/v1/gallery', function() {
         })
         .catch(err => expect(err.status).toEqual(401));
     });
-    it('should return a 404 status for not found', () => {
+    it('Should return a status code of 404 status for not found', () => {
       return superagent.put(`:${process.env.PORT}/api/v1/galle`)
         .set('Authorization', `Bearer ${this.mockGallery.token}`)
         .send({
@@ -43,7 +43,7 @@ describe('PUT api/v1/gallery', function() {
         })
         .catch(err => expect(err.status).toEqual(404));
     });
-    it('should return a 400 with an bad request', () => {
+    it('Should return a status 400 when not provided a valid request body', () => {
       return superagent.put(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', `Bearer ${this.mockGallery.token}`)
         .send({

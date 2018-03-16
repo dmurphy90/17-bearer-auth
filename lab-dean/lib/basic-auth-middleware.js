@@ -5,7 +5,7 @@ const errorHandler = require('./error-handler.js');
 module.exports = function(req, res, next) {
   let authHeaders = req.headers.authorization;
   if(!authHeaders) {
-    return errorHandler(new Error('Auth failes, headers do not match requirement'), res);
+    return errorHandler(new Error('Auth failed, headers do not match requirement'), res);
   }
   let base64 = authHeaders.split('Basic ')[1];
   if(!base64) {

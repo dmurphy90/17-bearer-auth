@@ -5,13 +5,13 @@ const superagent = require('superagent');
 const mock = require('../lib/mocks.js');
 require('jest');
 
-describe('GET', function() {
+describe('GET /api/v1/signin', function() {
   beforeAll(server.start);
   afterAll(server.stop);
   afterAll(mock.auth.removeAll);
 
 
-  describe('Valid req/res', () => {
+  describe('Valid request and response', () => {
     beforeAll(() => {
       return mock.auth.createOne()
         .then(data => {
@@ -21,15 +21,15 @@ describe('GET', function() {
             .then(res => this.response = res);
         });
     });
-    it('should return a status of 200', () => {
+    it('Should return a status code of 200', () => {
       expect(this.response.status).toBe(200);
     });
-    it('should return a token', () => {
+    it('Should return a valid token', () => {
       expect(this.authData).toHaveProperty('token');
     });
   });
-  describe('Invalid req/res', () => {
-    it('should return a status 400 given no request body', () => {
+  describe('Invalid request and response', () => {
+    it('Should return a status 400 when not provided a valid request body', () => {
       return superagent.post(`:${process.env.PORT}/api/v1/signup`)
         .send({
           username: 'tim',
@@ -46,7 +46,7 @@ describe('GET', function() {
             });
         });
     });
-    it('should return a status 404 on an invalid path', () => {
+    it('Should return a status 404 when given an invalid path', () => {
       return superagent.get(`:${process.env.PORT}/api/v1/note`)
         .catch(err => expect(err.status).toEqual(404));
     });

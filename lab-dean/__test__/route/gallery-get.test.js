@@ -14,15 +14,15 @@ describe('GET api/v1/gallery', function() {
   beforeAll(() => mock.auth.createOne().then(data => this.mockUser = data));
   beforeAll(() => mock.gallery.createOne().then(data => this.mockGallery = data));
 
-  describe('Valid request', () => {
-    it('should return a status 200 for all user galleries', () => {
+  describe('Valid request and response', () => {
+    it('Should return a status code of 200 when fetching all galleries', () => {
       return superagent.get(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', `Bearer ${this.mockUser.token}`)
         .then(res => {
           expect(res.status).toEqual(200);
         }); 
     });
-    it('should return a status 200 for a gallery with an id', () => {
+    it('Should return a status code of 200 when fetching a specific gallery', () => {
       return superagent.get(`:${process.env.PORT}/api/v1/gallery/${this.mockGallery.gallery._id}`)
         .set('Authorization', `Bearer ${this.mockUser.token}`)
         .then(res => {
@@ -30,13 +30,13 @@ describe('GET api/v1/gallery', function() {
         });
     });
   });
-  describe('Invalid request', () => {
-    it('should return a 401 NOT AUTHORIZED with a bad token', () => {
+  describe('Invalid request and response', () => {
+    it('Should return a status code of 401 NOT AUTHORIZED when given a bad token', () => {
       return superagent.get(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', 'Bearer BADTOKEN')
         .catch(err => expect(err.status).toEqual(401));
     });
-    it('should return a 404 status for not found', () => {
+    it('Should return a status code of 404 status for not found', () => {
       return superagent.get(`:${process.env.PORT}/api/v1/galle`)
         .set('Authorization', `Bearer ${this.mockUser.token}`)
         .send({})

@@ -14,7 +14,7 @@ describe('POST /api/v1/gallery', function() {
 
   beforeAll(() => mock.auth.createOne().then(data => this.mockUser = data));
 
-  describe('Valid request', () => {
+  describe('Valid request and response', () => {
     
     beforeAll(() => {
       return superagent.post(`:${process.env.PORT}/api/v1/gallery`)
@@ -26,7 +26,7 @@ describe('POST /api/v1/gallery', function() {
         .then(res => this.res = res);
     });
 
-    it('should return a 201 CREATED status code', () => {
+    it('Should return a status code of 201 when creating a gallery', () => {
       expect(this.res.status).toEqual(201);
     });
     it('should return a valid gallery as the body of data', () => {
@@ -34,18 +34,18 @@ describe('POST /api/v1/gallery', function() {
       expect(this.res.body).toHaveProperty('description');
       expect(this.res.body).toHaveProperty('_id');
     });
-    it('should return a userId that matches the mock user', () => {
+    it('Should return a UserID that matches the mock user provided', () => {
       expect(this.res.body.userId).toEqual(this.mockUser.user._id.toString());
     });
   });
 
-  describe('Invalid request', () => {
-    it('should return a 401 NOT AUTHORIZED given back token', () => {
+  describe('Invalid request and response', () => {
+    it('Should return a status code of 401 NOT AUTHORIZED when given a bad token', () => {
       return superagent.post(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', 'Bearer BADTOKEN')
         .catch(err => expect(err.status).toEqual(401));
     });
-    it('should return a 400 BAD REQUEST on improperly formatted body', () => {
+    it('Should return a status code of 400 BAD REQUEST when given an invalid body', () => {
       return superagent.post(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', `Bearer ${this.mockUser.token}`)
         .send({})

@@ -13,8 +13,8 @@ describe('DELETE api/v1/gallery', function() {
 
   beforeAll(() => mock.gallery.createOne().then(data => this.mockGallery = data));
 
-  describe('Valid request', () => {
-    it('should return a 204 delete status code', () => {
+  describe('Valid request and response', () => {
+    it('Should return a 204 status code when gallery is deleted', () => {
       return mock.gallery.createOne()
         .then(mock => {
           this.resultMock = mock;
@@ -26,13 +26,13 @@ describe('DELETE api/v1/gallery', function() {
         });
     });
   });
-  describe('Invalid request', () => {
-    it('should return a 401 given bad token', () => {
+  describe('Invalid request and response', () => {
+    it('Should return a status code of 401 when given bad token', () => {
       return superagent.delete(`:${process.env.PORT}/api/v1/gallery`)
         .set('Authorization', 'Bearer BADTOKEN')
         .catch(err => expect(err.status).toEqual(401));
     });
-    it('should return a 404 no found', () => {
+    it('Should return a status code of 404 with invalid route', () => {
       return superagent.delete(`:${process.env.PORT}/api/v1/galle`)
         .set('Authorization', `Bearer ${this.mockGallery.token}`)
         .catch(err => expect(err.status).toEqual(404));
