@@ -16,6 +16,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 app.use(cors());
 app.use('/api/v1', router);
 require('../route/route-auth.js')(router);
+require('../route/route-gallery.js')(router);
 app.all('/{0,}', (req, res) => errorHandler(new Error('Path Error: Path not found.'), res));
 
 // Server Control

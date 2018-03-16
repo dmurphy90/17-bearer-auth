@@ -2,42 +2,53 @@
 
 const server = require('../../lib/server.js');
 const superagent = require('superagent');
-const Auth = require('../../model/auth.js');
-const faker = require('faker');
+const mock = require('../lib/mocks.js');
 require('jest');
 
-describe('GET /api/v1/signup', function () {
-  let test = `:${process.env.PORT}/api/v1/signin`;
-  let signup = `:${process.env.PORT}/api/v1/signup`;
+describe('GET /api/v1/signin', function() {
   beforeAll(server.start);
   afterAll(server.stop);
-  afterAll(() => Promise.all([Auth.remove()]));
+  afterAll(mock.auth.removeAll);
 
-  describe('Valid Request and Response', () => {
+
+  describe('Valid request and response', () => {
     beforeAll(() => {
-      return superagent.post(signup)
-        .send(new Auth({
-          username: faker.internet.userName(),
-          password: faker.internet.password(),
-          email: faker.internet.email(),
-        }))
-        .then(res => this.response = res)
-        .then(() => {
-          return superagent.get(test)
-            .auth(this.response.request._data.username, this.response.request._data.password)
-            .then(res => this.test = res);
+      return mock.auth.createOne()
+        .then(data => {
+          this.authData = data;
+          return superagent.get(`:${process.env.PORT}/api/v1/signin`)
+            .auth(this.authData.user.username, data.password)
+            .then(res => this.response = res);
         });
     });
+    it('Should return a status code of 200', () => {
+      expect(this.response.status).toBe(200);
+    });
+    it('Should return a valid token', () => {
+      expect(this.authData).toHaveProperty('token');
+    });
   });
-
-  it('Should respond with a status code of 200', () => {
-    expect(this.test.status).toBe(200);
-  });
-  it('Should respond with a status of 401 if the user cannot be authenticated', () => {
-    return superagent.get(test)
-      .auth('tim', 'dog')
-      .catch(err => {
-        expect(err.status).toBe(401);
-      });
+  describe('Invalid request and response', () => {
+    it('Should return a status 400 when not provided a valid request body', () => {
+      return superagent.post(`:${process.env.PORT}/api/v1/signup`)
+        .send({
+          username: 'tim',
+          password: 'timothy',
+          email: 'hel@lo.com',
+        })
+        .then((res) => {
+          this.response = res;
+          return superagent.get(`:${process.env.PORT}/api/v1/signin`)
+            .auth('tim', 'notmypassword')
+            .catch(err => {
+              this.errRes = err;
+              expect(this.errRes.status).toEqual(401);
+            });
+        });
+    });
+    it('Should return a status 404 when given an invalid path', () => {
+      return superagent.get(`:${process.env.PORT}/api/v1/note`)
+        .catch(err => expect(err.status).toEqual(404));
+    });
   });
 });

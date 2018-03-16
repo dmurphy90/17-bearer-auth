@@ -1,57 +1,49 @@
 'use strict';
 
-const User = require('../../model/auth');// vinicio - similar to a user
 const faker = require('faker');
-const Gallery = require('../../model/gallery');
+const Auth = require('../../model/auth.js');
+const Gallery = require('../../model/gallery.js');
 
 const mock = module.exports = {};
 
-mock.user = {};
+mock.auth = {};
 
-mock.user.createOne = () => {
+mock.auth.createOne = () => {
   let result = {};
   result.password = faker.internet.password();
 
-  let user = new User({
+  return new Auth({
     username: faker.internet.userName(),
     email: faker.internet.email(),
-  });
-
-  return user.generatePasswordHash(result.password)
-    .then(auth => {
-      result.auth = auth;
-      return auth.save();
-    })
-    .then(auth => auth.generateToken())
-    .then(token => {
-      result.token = token;
+  })
+    .generatePasswordHash(result.password)
+    .then(user => result.user = user)
+    .then(user => user.generateToken())
+    .then(token => result.token = token)
+    .then(() => {
       return result;
     });
 };
 
-mock.user.removeAll = () => Promise.all([User.remove()]);
-
+mock.auth.removeAll = () => Promise.all([Auth.remove()]);
 
 mock.gallery = {};
-
 mock.gallery.createOne = () => {
   let resultMock = null;
 
-  return mock.user.createOne()
+  return mock.auth.createOne()
     .then(createdUserMock => resultMock = createdUserMock)
     .then(createdUserMock => {
       return new Gallery({
         name: faker.internet.domainWord(),
         description: faker.random.words(15),
-        userId: createdUserMock.auth._id,
+        userId: createdUserMock.user._id,
       }).save();
     })
     .then(gallery => {
-    
       resultMock.gallery = gallery;
       return resultMock;
     });
 };
-
 
 mock.gallery.removeAll = () => Promise.all([Gallery.remove()]);
